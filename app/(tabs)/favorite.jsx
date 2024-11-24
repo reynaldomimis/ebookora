@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useCategory } from "../context/ContextProviders";
-import Toolbars from "../components/Toolbars";
+import { useCategory } from "../../context/ContextProviders";
+import Toolbars from "../../components/Toolbars";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -47,67 +46,61 @@ const Signup = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
-        {/* ScrollView for handling content overflow and tap persistence */}
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View className="w-full min-h-[85vh] justify-center px-4 my-6">
-            {/* Logo Image */}
-            <Image
-              source={images.logo}
-              className="w-[150px] h-[85px]"
-              resizeMode="contain"
-            />
-            <Text className="text-2xl font-psemibold text-gray-800 mt-10">
-              Create an Account
+        <View className="w-full min-h-[85vh] justify-center px-4 my-6">
+          {/* Logo Image */}
+          <Image
+            source={images.logo}
+            className="w-[150px] h-[85px]"
+            resizeMode="contain"
+          />
+          <Text className="text-2xl font-psemibold text-gray-800 mt-10">
+            Create an Account
+          </Text>
+
+          {/* Form Fields */}
+          <FormField
+            title="Username"
+            value={form.username}
+            handleChangeText={(e) => setForm({ ...form, username: e })}
+            otherStyles="mt-10"
+          />
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
+            otherStyles="mt-4"
+            keyboardType="email-address"
+          />
+          <FormField
+            title="Password"
+            value={form.password}
+            handleChangeText={(e) => setForm({ ...form, password: e })}
+            otherStyles="mt-4"
+            secureTextEntry
+          />
+
+          {/* Sign Up Button */}
+          <CButton
+            label={isSubmitting ? "Signing Up..." : "SIGN UP"}
+            handlePress={submit}
+            isLoading={isSubmitting} 
+            containerStyles="w-full mt-7"
+            extraStyles="w-full mt-12 self-center"
+          />
+
+          {/* Sign In Link */}
+          <View className="text-gray-700 justify-center pt-5 flex-row gap-2">
+            <Text className="text-lg text-gray-700 font-pregular">
+              Have an account already?
             </Text>
-
-            {/* Form Fields */}
-            <FormField
-              title="Username"
-              value={form.username}
-              handleChangeText={(e) => setForm({ ...form, username: e })}
-              otherStyles="mt-10"
-            />
-            <FormField
-              title="Email"
-              value={form.email}
-              handleChangeText={(e) => setForm({ ...form, email: e })}
-              otherStyles="mt-4"
-              keyboardType="email-address"
-            />
-            <FormField
-              title="Password"
-              value={form.password}
-              handleChangeText={(e) => setForm({ ...form, password: e })}
-              otherStyles="mt-4"
-              secureTextEntry
-            />
-
-            {/* Sign Up Button */}
-            <CButton
-              label={isSubmitting ? "Signing Up..." : "SIGN UP"}
-              handlePress={submit}
-              isLoading={isSubmitting} // Pass the loading state
-              containerStyles="w-full mt-7"
-              extraStyles="w-full mt-12 self-center"
-            />
-
-            {/* Sign In Link */}
-            <View className="text-gray-700 justify-center pt-5 flex-row gap-2">
-              <Text className="text-lg text-gray-700 font-pregular">
-                Have an account already?
-              </Text>
-              <Link
-                href="/signin"
-                className="text-lg font-psemibold text-green-600"
-              >
-                Sign In
-              </Link>
-            </View>
+            <Link
+              href="/signin"
+              className="text-lg font-psemibold text-green-600"
+            >
+              Sign In
+            </Link>
           </View>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

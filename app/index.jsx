@@ -3,22 +3,21 @@ import React, { useRef } from "react";
 import LottieView from "lottie-react-native";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { lottie } from "../constants";
 
 const App = () => {
   const animationRef = useRef(null);
   return (
     <View className="bg-white gap-4 p-4 flex-1 justify-center items-center">
       <LottieView
-        source={require("../assets/animation/lottie.json")}
+        source={lottie}
         autoPlay
         loop
         style={{ width: "100%", height: 400 }}
         ref={animationRef}
       />
       <View className="w-full">
-        <Text className="text-3xl text-center font-pmedium mx-2">
-          FreeAcademya
-        </Text>
+        <Text className="text-4xl text-center font-pmedium mx-2">eBookora</Text>
         <Text className="text-center text-xl mx-2">
           Unlimited Learning, Free of Charge
         </Text>

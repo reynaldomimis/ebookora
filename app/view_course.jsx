@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import { Text, View } from "react-native";
 import React, { useState } from "react";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Toolbars from "../components/Toolbars";
@@ -8,8 +8,7 @@ import Courses from "../components/card/Courses";
 import { useCategory } from "../context/ContextProviders";
 import { StatusBar } from "expo-status-bar";
 
-const Demo = () => {
-  const route = useRoute();
+const ViewCourse = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(coursesBooks);
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -56,4 +55,4 @@ const Demo = () => {
   );
 };
 
-export default Demo;
+export default ViewCourse;

@@ -29,7 +29,7 @@ const SeeMore = () => {
   };
 
   const handleCategoryView = (item) => {
-    navigation.navigate("viewer", { item });
+    navigation.navigate("view_pdf", { item });
   };
 
   return (

@@ -14,7 +14,7 @@ export default Explore = ({ data }) => {
     <TouchableOpacity
       className="items-center mx-2"
       onPress={() => {
-        navigation.navigate("demo");
+        navigation.navigate("view_course");
         setSelectedCategory(item.title);
       }}
     >

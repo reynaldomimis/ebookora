@@ -2,26 +2,20 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { CategoryProvider } from "../context/ContextProviders";
+import { AuthProvider } from "../context/AuthProvider";
+import { fonts } from "../constants";
 import "../global.css";
-import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  const [fontsLoaded, error] = useFonts({
-    "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
-    "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
-    "Poppins-ExtraBold": require("../assets/fonts/Poppins-ExtraBold.ttf"),
-    "Poppins-ExtraLight": require("../assets/fonts/Poppins-ExtraLight.ttf"),
-    "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
-    "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
-    "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
-    "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
-    "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
-  });
+  const [fontsLoaded, error] = useFonts(fonts);
 
   useEffect(() => {
-    if (error) throw error;
+    if (error) {
+      console.error("Error loading fonts:", error);
+      throw error;
+    }
 
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -32,22 +26,20 @@ const RootLayout = () => {
     return null;
   }
 
-  if (!fontsLoaded && !error) {
-    return null;
-  }
-
   return (
-    <CategoryProvider>
-      <Stack>
-        <Stack.Screen name="favorite" options={{ headerShown: false }} />
-        <Stack.Screen name="home" options={{ headerShown: false }} />
-        <Stack.Screen name="demo" options={{ headerShown: false }} />
-        <Stack.Screen name="viewer" options={{ headerShown: false }} />
-        <Stack.Screen name="seemore" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      </Stack>
-    </CategoryProvider>
+    <AuthProvider>
+      <CategoryProvider>
+        <Stack>
+          <Stack.Screen name="notifications" options={{ headerShown: false }} />
+          <Stack.Screen name="view_course" options={{ headerShown: false }} />
+          <Stack.Screen name="view_pdf" options={{ headerShown: false }} />
+          <Stack.Screen name="seemore" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack>
+      </CategoryProvider>
+    </AuthProvider>
   );
 };
 

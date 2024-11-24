@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 
-const Viewer = () => {
+const ViewPF = () => {
   return (
     <View>
       <Text>View</Text>
@@ -11,4 +11,4 @@ const Viewer = () => {
   );
 };
 
-export default Viewer;
+export default ViewPF;
