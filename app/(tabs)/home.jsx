@@ -30,10 +30,10 @@ const Home = () => {
         <View className="flex-row items-center justify-between mb-2">
           <View className="gap-2">
             <Text className="text-white text-lg font-pmedium">
-              Good Morning👋
+             Welcome to eBookora 👋
             </Text>
             <Text className="text-2xl text-white font-psemibold">
-              Reynaldo Tesoy
+              Reynaldo Test
             </Text>
           </View>
           {/* Notification badge */}
@@ -58,18 +58,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <View className="flex-row items-center mt-4 px-4 py-1 rounded-2xl bg-white/20 self-center w-full">
-          <TextInput
-            placeholder="Search courses..."
-            placeholderTextColor="white"
-            className="text-white text-base flex-1"
-          />
-          <TouchableOpacity
-            onPress={() => navigation.navigate("notifications")}
-          >
-            <Icon name="magnify" size={24} color="white" />
-          </TouchableOpacity>
-        </View> */}
+       {/* Search query params */}
         <SearchInput />
       </View>
       <Text className="text-xl font-psemibold my-2 px-4 py-4">

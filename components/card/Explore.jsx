@@ -7,7 +7,7 @@ import EmptyState from "../EmptyState";
 
 export default Explore = ({ data }) => {
   const navigation = useNavigation();
-  const { setSelectedCategory } = useCategory();
+  const { setSelectedItems } = useCategory();
 
   // Category Item Component
   const RenderExploreItem = ({ item }) => (
@@ -15,7 +15,10 @@ export default Explore = ({ data }) => {
       className="items-center mx-2"
       onPress={() => {
         navigation.navigate("view_course");
-        setSelectedCategory(item.title);
+        setSelectedItems({
+          title: item.title,
+          course: item.course,
+        });
       }}
     >
       <View className="w-14 h-14 bg-blue rounded-full items-center justify-center mb-2">

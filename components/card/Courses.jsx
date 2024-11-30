@@ -6,20 +6,25 @@ import { useCategory } from "../../context/ContextProviders";
 import { useNavigation } from "expo-router";
 
 export default Courses = ({ data }) => {
-  const { favorites, addFavorite, removeFavorite, setSelectedItems } =
-    useCategory();
+  const {
+    favorites,
+    addFavorite,
+    removeFavorite,
+    setSelectedItems,
+    selectedItems,
+  } = useCategory();
   const navigation = useNavigation();
 
+  // Filter the data by `item.course`
+  const filteredData = data.filter((item) => item.course === selectedItems.title);
+
   const RenderExploreItem = ({ item }) => {
-    // Check if item is already in favorites
     const isFavorite = favorites.some((fav) => fav.id === item.id);
 
     const handleBookmark = () => {
       if (isFavorite) {
-        // Remove from favorites if already added
         removeFavorite(item.id);
       } else {
-        // Add to favorites
         addFavorite(item);
       }
     };
@@ -54,7 +59,6 @@ export default Courses = ({ data }) => {
             <Text className="text-base font-semibold">{item.title}</Text>
           </View>
 
-          {/* Actions - Reading and Add to Favorites */}
           <View className="flex-row justify-between items-center px-4 pb-4">
             <TouchableOpacity
               className="flex-row items-center"
@@ -83,7 +87,7 @@ export default Courses = ({ data }) => {
 
   return (
     <FlatList
-      data={data}
+      data={filteredData}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <RenderExploreItem item={item} />}
       ListEmptyComponent={EmptyState}

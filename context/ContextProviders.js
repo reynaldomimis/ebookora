@@ -40,8 +40,8 @@ export const CategoryProvider = ({ children }) => {
         removeFavorite,
         selectedItems,
         setSelectedItems,
-        points, // Expose points in the context
-        incrementPoints, // Expose incrementPoints function to update points
+        points,
+        incrementPoints,
       }}
     >
       {children}

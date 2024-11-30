@@ -100,7 +100,7 @@ const Search = () => {
           padding: 8
         }}
         ListHeaderComponent={() => (
-          <View className="bg-blue pt-8 px-6 pb-4">
+          <View className="bg-blue pt-14 px-6 pb-4">
             <Text className="text-sm font-medium text-white">
               Search Results
             </Text>

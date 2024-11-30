@@ -35,13 +35,13 @@ const ViewCourse = () => {
     setSearchVisible(!isSearchVisible);
   };
 
-  const { selectedCategory} = useCategory();
+  const { selectedItems} = useCategory();
 
   return (
     <View className="flex-1 bg-white">
       {/* Reusing Toolbars Component */}
       <Toolbars
-        title={selectedCategory}
+        title={selectedItems.title}
         isSearchVisible={isSearchVisible}
         setSearchVisible={setSearchVisible}
         searchQuery={searchQuery}
