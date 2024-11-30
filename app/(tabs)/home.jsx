@@ -7,6 +7,7 @@ import { categories, courses } from "../../constants/data";
 import Explore from "../../components/card/Explore";
 import NewRelease from "../../components/card/NewRelease";
 import { useCategory } from "../../context/ContextProviders";
+import SearchInput from "../../components/SearchInput";
 
 const Home = () => {
   const { setSelectedCategory } = useCategory();
@@ -57,17 +58,19 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View className="flex-row items-center mt-4 px-4 py-1 rounded-2xl bg-white/20 self-center w-full">
+        {/* <View className="flex-row items-center mt-4 px-4 py-1 rounded-2xl bg-white/20 self-center w-full">
           <TextInput
             placeholder="Search courses..."
             placeholderTextColor="white"
             className="text-white text-base flex-1"
-            onSubmitEditing={() => {}}
           />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("notifications")}
+          >
             <Icon name="magnify" size={24} color="white" />
           </TouchableOpacity>
-        </View>
+        </View> */}
+        <SearchInput />
       </View>
       <Text className="text-xl font-psemibold my-2 px-4 py-4">
         Explore Courses

@@ -1,24 +1,40 @@
-// components/SearchInput.jsx
-import React, { useState } from "react";
-import { View, TextInput } from "react-native";
+import { useState } from "react";
+import { router, usePathname } from "expo-router";
+import { View, TouchableOpacity, TextInput, Alert } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SearchInput = ({ initialQuery, refetch }) => {
-  const [query, setQuery] = useState(initialQuery);
-
-  const handleSearch = () => {
-    refetch(query);
-  };
+const SearchInput = ({ initialQuery }) => {
+  const pathname = usePathname();
+  const [query, setQuery] = useState(initialQuery || "");
 
   return (
-    <View className="flex-row items-center bg-secondary p-3 rounded-lg">
+    <View className="flex-row items-center mt-4 px-4 py-1 rounded-2xl bg-white/20 self-center w-full">
       <TextInput
         value={query}
-        onChangeText={(text) => setQuery(text)}
-        placeholder="Search..."
-        placeholderTextColor="#A0A0A0"
-        className="flex-1 text-white font-pmedium"
-        onSubmitEditing={handleSearch}
+        placeholder="Search courses..."
+        placeholderTextColor="white"
+        onChangeText={(e) => setQuery(e)}
+        className="text-white text-base font-pmedium flex-1"
       />
+
+      <TouchableOpacity
+        onPress={() => {
+          if (query === "") {
+            return Alert.alert(
+              "Missing Query",
+              "Please input something to search results across the database"
+            );
+          }
+
+          if (pathname.startsWith("/search")) {
+            router.setParams({ query });
+          } else {
+            router.push(`/search/${query}`);
+          }
+        }}
+      >
+        <Icon name="magnify" size={30} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
