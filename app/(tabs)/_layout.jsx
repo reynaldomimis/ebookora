@@ -8,7 +8,7 @@ const TabIcon = ({ iconName, color, name, focused }) => {
     <View style={styles.iconContainer}>
       <MaterialCommunityIcons
         name={iconName}
-        size={24} // Icon size
+        size={24} 
         color={color}
       />
       <Text

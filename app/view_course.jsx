@@ -35,7 +35,7 @@ const ViewCourse = () => {
     setSearchVisible(!isSearchVisible);
   };
 
-  const { selectedCategory, setSelectedCategory } = useCategory();
+  const { selectedCategory} = useCategory();
 
   return (
     <View className="flex-1 bg-white">

@@ -5,5 +5,5 @@ import eye from "../assets/icons/eye.png";
 
 export default {
   eyeHide,
-  eye,
+  eye
 };

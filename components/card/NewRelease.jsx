@@ -4,25 +4,39 @@ import { FlatList } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCategory } from "../../context/ContextProviders";
 import EmptyState from "../EmptyState";
+import { useNavigation } from "expo-router";
 
-const NewRelease = ({ data, onPress }) => {
-  const { favorites, addFavorite, removeFavorite } = useCategory(); // Access context
+const NewRelease = ({ data }) => {
+  const { favorites, addFavorite, removeFavorite, setSelectedItems } =
+    useCategory();
+  const navigation = useNavigation();
 
   // Course Item Component
   const RenderNewReleaseItem = ({ item }) => {
-    const isFavorite = favorites.some((fav) => fav.id === item.id); // Check if item is already in favorites
+    // Check if item is already in favorites
+    const isFavorite = favorites.some((fav) => fav.id === item.id);
 
     const handleBookmark = () => {
       if (isFavorite) {
-        removeFavorite(item.id); // Remove from favorites if already added
+        // Remove from favorites if already added
+        removeFavorite(item.id);
       } else {
-        addFavorite(item); // Add to favorites
+        // Add to favorites
+        addFavorite(item);
       }
+    };
+
+    const handleItem = () => {
+      navigation.navigate("view_pdf");
+      setSelectedItems({
+        id: item.id,
+        title: item.title,
+      });
     };
 
     return (
       <Pressable
-        onPress={() => alert("You pressed an item!")}
+        onPress={handleItem}
         style={{
           flexDirection: "row",
           padding: 16,

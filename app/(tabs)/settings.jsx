@@ -10,12 +10,18 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BugReportModal from "../../components/BugReportModal";
+import Constants from "expo-constants";
+import { useNavigation } from "expo-router";
 
 // Sample settings list with titles and descriptions
 const settingsList = [
   { id: "1", title: "Report Bug" },
   { id: "2", title: "Changelog", description: "What's new in this version?" },
-  { id: "3", title: "About App", description: "Explore about the D.T. Assets" },
+  {
+    id: "3",
+    title: "About App",
+    description: "Explore about the Ebookora: Free Ebooks Online",
+  },
   { id: "4", title: "Special Credits", description: "List of contributors" },
 ];
 
@@ -85,6 +91,7 @@ const Settings = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [bugTitle, setBugTitle] = useState("");
   const [bugDescription, setBugDescription] = useState("");
+  const navigation = useNavigation();
 
   const handlePress = (id) => {
     if (id === "1") {
@@ -106,7 +113,7 @@ const Settings = () => {
       {/* Toolbar */}
       <View className="bg-blue pt-16 pb-4 mb-4">
         <View className="flex-row items-center justify-between px-4">
-          <TouchableOpacity onPress={() => console.log("Go back")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-left" size={28} color="white" />
           </TouchableOpacity>
           <Text className="text-xl font-semibold text-center flex-1 text-white pr-8">
@@ -121,7 +128,9 @@ const Settings = () => {
           source={{ uri: "https://via.placeholder.com/100" }}
           style={{ width: 100, height: 100, borderRadius: 50 }}
         />
-        <Text className="text-md text-gray-600 mt-2">Version 2.1.0</Text>
+        <Text className="text-md text-gray-600 mt-2">
+          Version {Constants.systemVersion}
+        </Text>
       </View>
 
       {/* About Section */}
@@ -175,9 +184,9 @@ const Settings = () => {
             {item.id === "3" && expandedItem === "3" && (
               <View className="mt-4">
                 <Text className="text-sm text-[#555]">
-                  D.T. Assets is an app designed to manage and report bugs
-                  efficiently. It allows users to submit bug reports and track
-                  app updates and changes.
+                  eBookora: Free Ebooks Course is an app designed to manage and
+                  report bugs efficiently. It allows users to submit bug reports
+                  and track app updates and changes.
                 </Text>
               </View>
             )}

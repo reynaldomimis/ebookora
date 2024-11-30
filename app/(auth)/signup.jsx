@@ -63,27 +63,37 @@ const Signup = () => {
             value={form.username}
             handleChangeText={(e) => setForm({ ...form, username: e })}
             otherStyles="mt-10"
+            keyboardType="text"
+            placeholder="Enter your username"
+            placeholderTextColor="gray"
           />
+
+          {/* Email Field */}
           <FormField
             title="Email"
             value={form.email}
             handleChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-4"
             keyboardType="email-address"
+            placeholder="Enter your email"
+            placeholderTextColor="gray"
           />
+
+          {/* Password Field */}
           <FormField
             title="Password"
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-4"
-            secureTextEntry
+            placeholder="Enter your password"
+            placeholderTextColor="gray"
           />
 
           {/* Sign Up Button */}
           <CButton
             label={isSubmitting ? "Signing Up..." : "SIGN UP"}
             handlePress={submit}
-            isLoading={isSubmitting} 
+            isLoading={isSubmitting}
             containerStyles="w-full mt-7"
             extraStyles="w-full mt-12 self-center"
           />

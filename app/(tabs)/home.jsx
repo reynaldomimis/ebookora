@@ -19,7 +19,7 @@ const Home = () => {
   };
 
   const handleCategoryView = (item) => {
-    navigation.navigate("view_pdf", { item });
+    navigation.navigate("view_pdf");
     setSelectedCategory(item.title);
   };
 
