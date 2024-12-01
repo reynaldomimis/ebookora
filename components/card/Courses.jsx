@@ -16,7 +16,7 @@ export default Courses = ({ data }) => {
   const navigation = useNavigation();
 
   // Filter the data by `item.course`
-  const filteredData = data.filter((item) => item.course === selectedItems.title);
+  const filteredData = data.filter((item) => item.course === selectedItems.course);
 
   const RenderExploreItem = ({ item }) => {
     const isFavorite = favorites.some((fav) => fav.id === item.id);
@@ -33,7 +33,7 @@ export default Courses = ({ data }) => {
       navigation.navigate("view_pdf");
       setSelectedItems({
         id: item.id,
-        title: item.title,
+        course: item.course,
       });
     };
 

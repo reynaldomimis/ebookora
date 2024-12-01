@@ -1,13 +1,25 @@
-import React from "react";
-import { Pressable, Text, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
-export default ({ label, handlePress, isLoading, extraStyles = "" }) => (
-  <Pressable
-    onPress={handlePress}
-    className={`bg-blue rounded-3xl py-5 items-center justify-center ${extraStyles}`}
-  >
-    <Text className="text-lg font-bold text-white flex-row items-center">
-      {label}
+const CButton = ({
+  label,
+  handlePress,
+  containerStyles,
+  textStyles,
+  isLoading,
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={handlePress}
+      activeOpacity={0.7}
+      className={`bg-blue rounded-full min-h-[62px] flex flex-row justify-center items-center ${containerStyles} ${
+        isLoading ? "opacity-50" : ""
+      }`}
+      disabled={isLoading}
+    >
+      <Text className={`text-white font-psemibold text-lg ${textStyles}`}>
+        {label}
+      </Text>
+
       {isLoading && (
         <ActivityIndicator
           animating={isLoading}
@@ -16,6 +28,8 @@ export default ({ label, handlePress, isLoading, extraStyles = "" }) => (
           className="ml-2"
         />
       )}
-    </Text>
-  </Pressable>
-);
+    </TouchableOpacity>
+  );
+};
+
+export default CButton;

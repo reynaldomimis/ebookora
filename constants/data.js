@@ -168,14 +168,14 @@ export const coursesBooks = [
 ];
 
 export const categories = [
-  { id: "1", title: "BSIT", icon: "laptop" }, // Bachelor of Science in Information Technology
-  { id: "2", title: "BSCS", icon: "remote-desktop" }, // Bachelor of Science in Computer Science
-  { id: "3", title: "BSCE", icon: "desktop-tower-monitor" }, // Bachelor of Science in Computer Engineering
-  { id: "4", title: "BSEE", icon: "integrated-circuit-chip" }, // Bachelor of Science in Electronics Engineering
-  { id: "5", title: "BSIS", icon: "desktop-classic" }, // Bachelor of Science in Information Systems
-  { id: "6", title: "BSSE", icon: "code-json" }, // Bachelor of Science in Software Engineering
-  { id: "7", title: "BSN", icon: "wifi" }, // Bachelor of Science in Networking
-  { id: "8", title: "BSCYBER", icon: "shield" }, // Bachelor of Science in Cybersecurity
-  { id: "9", title: "BSAI", icon: "brain" }, // Bachelor of Science in Artificial Intelligence
-  { id: "10", title: "BSDS", icon: "database" }, // Bachelor of Science in Data Science
+  { id: "1", course: "BSIT", icon: "laptop" }, // Bachelor of Science in Information Technology
+  { id: "2", course: "BSCS", icon: "remote-desktop" }, // Bachelor of Science in Computer Science
+  { id: "3", course: "BSCE", icon: "desktop-tower-monitor" }, // Bachelor of Science in Computer Engineering
+  { id: "4", course: "BSEE", icon: "integrated-circuit-chip" }, // Bachelor of Science in Electronics Engineering
+  { id: "5", course: "BSIS", icon: "desktop-classic" }, // Bachelor of Science in Information Systems
+  { id: "6", course: "BSSE", icon: "code-json" }, // Bachelor of Science in Software Engineering
+  { id: "7", course: "BSN", icon: "wifi" }, // Bachelor of Science in Networking
+  { id: "8", course: "BSCYBER", icon: "shield" }, // Bachelor of Science in Cybersecurity
+  { id: "9", course: "BSAI", icon: "brain" }, // Bachelor of Science in Artificial Intelligence
+  { id: "10", course: "BSDS", icon: "database" }, // Bachelor of Science in Data Science
 ];

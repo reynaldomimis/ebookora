@@ -11,7 +11,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BugReportModal from "../../components/BugReportModal";
 import Constants from "expo-constants";
-import { useNavigation } from "expo-router";
+import { useRouter} from "expo-router";
 
 // Sample settings list with titles and descriptions
 const settingsList = [
@@ -23,6 +23,7 @@ const settingsList = [
     description: "Explore about the Ebookora: Free Ebooks Online",
   },
   { id: "4", title: "Special Credits", description: "List of contributors" },
+  { id: "5", title: "Log Out" },
 ];
 
 // Sample changelog data
@@ -91,13 +92,25 @@ const Settings = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [bugTitle, setBugTitle] = useState("");
   const [bugDescription, setBugDescription] = useState("");
-  const navigation = useNavigation();
+  const router = useRouter();
 
-  const handlePress = (id) => {
+  const handlePress = async (id) => {
     if (id === "1") {
       setModalVisible(true);
+    } else if (id === "5") {
+      await handleSignOut();
     } else {
       setExpandedItem(expandedItem === id ? null : id);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      // await signOut();
+      // After successful sign-out, navigate to login screen
+      router.replace("/signin"); // Adjust the name of the login screen if necessary
+    } catch (error) {
+      console.error("Sign out failed:", error);
     }
   };
 
@@ -113,7 +126,7 @@ const Settings = () => {
       {/* Toolbar */}
       <View className="bg-blue pt-16 pb-4 mb-4">
         <View className="flex-row items-center justify-between px-4">
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Icon name="arrow-left" size={28} color="white" />
           </TouchableOpacity>
           <Text className="text-xl font-semibold text-center flex-1 text-white pr-8">

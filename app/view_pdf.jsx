@@ -10,9 +10,8 @@ import { useFocusEffect } from "@react-navigation/native";
 const ViewPF = () => {
   const { selectedItems, points, incrementPoints } = useCategory();
   const navigation = useNavigation();
-
   const [timeSpent, setTimeSpent] = useState(0);
-  const [timerActive, setTimerActive] = useState(true); // Track if the timer is active
+  const [timerActive, setTimerActive] = useState(true); 
 
   useEffect(() => {
     let timer;
@@ -92,6 +91,7 @@ const ViewPF = () => {
 
       <View className="px-4">
         <Text className="text-lg">ID: {selectedItems.id}</Text>
+        <Text className="text-lg">Title: {selectedItems.title}</Text>
         <Text className="text-lg mt-2">
           Time Spent: {Math.floor(timeSpent / 60)} min {timeSpent % 60} sec
         </Text>
