@@ -24,7 +24,7 @@ const App = () => {
 
         <Pressable
           onPress={() => router.push("/signin")}
-          className="bg-blue rounded-3xl py-5 items-center justify-center w-3/4 mt-28 self-center"
+          className="bg-blue rounded-full py-5 items-center justify-center w-3/4 mt-28 self-center"
         >
           <Text className="text-lg font-bold text-white">Get Started</Text>
         </Pressable>

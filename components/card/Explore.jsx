@@ -16,7 +16,6 @@ export default Explore = ({ data }) => {
       onPress={() => {
         navigation.navigate("view_course");
         setSelectedItems({
-          title: item.title,
           course: item.course,
         });
       }}
@@ -24,7 +23,7 @@ export default Explore = ({ data }) => {
       <View className="w-14 h-14 bg-blue rounded-full items-center justify-center mb-2">
         <Icon name={item.icon} size={30} color="white" />
       </View>
-      <Text className="text-sm font-pmedium text-center">{item.title}</Text>
+      <Text className="text-sm font-pmedium text-center">{item.course}</Text>
     </TouchableOpacity>
   );
 

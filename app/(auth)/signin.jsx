@@ -11,10 +11,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
-import { Link, useRouter } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
+import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 const SignIn = () => {
-  const router = useRouter(); // Access router for navigation
+  const { setUser, setIsLogged } = useAuth();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -22,16 +24,20 @@ const SignIn = () => {
   });
 
   const submit = async () => {
-    if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the fields");
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
     setSubmitting(true);
     try {
-      // Simulate successful sign-in and navigate
-      router.replace("/home");
+      await signIn(form.email, form.password);
+      const result = await getCurrentUser();
+      setUser("Rey");
+      console.log("Result ", result);
+      setIsLogged(true);
+      router.push("/home");
     } catch (err) {
-      Alert.alert("Error", "Sign in failed. Please try again.");
+      Alert.alert("Error", err.message || "An unknown error occurred");
     } finally {
       setSubmitting(false);
     }

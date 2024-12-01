@@ -12,27 +12,34 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
 import { Link, useRouter } from "expo-router";
+import { createUser, getCurrentUser } from "../../lib/appwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 const Signup = () => {
-  const router = useRouter(); // Access router for navigation
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const { setUser, setIsLogged } = useAuth();
+  const router = useRouter();
 
   const submit = async () => {
-    if (!form.username || !form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the fields");
-      return;
+    if (form.username === "" || form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
     }
     setSubmitting(true);
     try {
-      // Simulate successful sign-up and navigate
+      await createUser(form.email, form.password, form.username);
+      const result = await getCurrentUser();
+      setUser(result);
+      setIsLogged(true);
+      console.log("Result signup", result);
       router.replace("/home");
-    } catch (err) {
-      Alert.alert("Error", "Sign up failed. Please try again.");
+      // router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
     } finally {
       setSubmitting(false);
     }

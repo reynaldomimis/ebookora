@@ -27,13 +27,13 @@ const ViewCourse = () => {
   };
 
   // Toggle search visibility and reset search state when cancelled
-  const toggleSearch = () => {
-    if (isSearchVisible) {
-      setSearchQuery("");
-      setFilteredCourses(coursesBooks);
-    }
-    setSearchVisible(!isSearchVisible);
-  };
+  // const toggleSearch = () => {
+  //   if (isSearchVisible) {
+  //     setSearchQuery("");
+  //     setFilteredCourses(coursesBooks);
+  //   }
+  //   setSearchVisible(!isSearchVisible);
+  // };
 
   const { selectedItems} = useCategory();
 
@@ -41,7 +41,7 @@ const ViewCourse = () => {
     <View className="flex-1 bg-white">
       {/* Reusing Toolbars Component */}
       <Toolbars
-        title={selectedItems.title}
+        title={selectedItems.course}
         isSearchVisible={isSearchVisible}
         setSearchVisible={setSearchVisible}
         searchQuery={searchQuery}

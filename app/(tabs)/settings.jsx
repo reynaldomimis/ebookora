@@ -11,7 +11,8 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BugReportModal from "../../components/BugReportModal";
 import Constants from "expo-constants";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { signOut } from "../../lib/appwrite";
 
 // Sample settings list with titles and descriptions
 const settingsList = [
@@ -23,6 +24,7 @@ const settingsList = [
     description: "Explore about the Ebookora: Free Ebooks Online",
   },
   { id: "4", title: "Special Credits", description: "List of contributors" },
+  { id: "5", title: "Log Out" },
 ];
 
 // Sample changelog data
@@ -93,13 +95,27 @@ const Settings = () => {
   const [bugDescription, setBugDescription] = useState("");
   const navigation = useNavigation();
 
-  const handlePress = (id) => {
+  const handlePress = async (id) => {
     if (id === "1") {
       setModalVisible(true);
+    } else if (id === "5") {
+      await handleSignOut();
     } else {
       setExpandedItem(expandedItem === id ? null : id);
     }
   };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // After successful sign-out, navigate to login screen
+      navigation.navigate("signin"); // Adjust the name of the login screen if necessary
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      // You can show an alert or error message to the user
+    }
+  };
+
 
   const handleSubmitBug = () => {
     console.log("Bug Submitted:", { bugTitle, bugDescription });
@@ -179,7 +195,6 @@ const Settings = () => {
                 ))}
               </View>
             )}
-
             {/* About App */}
             {item.id === "3" && expandedItem === "3" && (
               <View className="mt-4">
