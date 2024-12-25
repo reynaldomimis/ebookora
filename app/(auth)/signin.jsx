@@ -12,9 +12,12 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
 import { Link, useRouter } from "expo-router";
+import { signIn } from "../../lib/appwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 const SignIn = () => {
-  const router = useRouter(); // Access router for navigation
+  const { setUser, setIsLogged } = useAuth();
+  const router = useRouter();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -28,10 +31,13 @@ const SignIn = () => {
     }
     setSubmitting(true);
     try {
-      // Simulate successful sign-in and navigate
+      const result = await signIn(form.email, form.password);
+      setUser("Rey");
+      console.log("Result ", result);
+      setIsLogged(true);
       router.replace("/home");
     } catch (err) {
-      Alert.alert("Error", "Sign in failed. Please try again.");
+      Alert.alert("Error", err.message || err);
     } finally {
       setSubmitting(false);
     }

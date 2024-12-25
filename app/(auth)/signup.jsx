@@ -12,9 +12,11 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
 import { Link, useRouter } from "expo-router";
+import { createUser } from "../../lib/appwrite";
 
 const Signup = () => {
-  const router = useRouter(); // Access router for navigation
+  const { setUser, setIsLogged } = useAuth();
+  const router = useRouter();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -29,7 +31,10 @@ const Signup = () => {
     }
     setSubmitting(true);
     try {
-      // Simulate successful sign-up and navigate
+      const result = await createUser(form.email, form.password, form.username);
+      setUser("Rey");
+      console.log("Result ", result);
+      setIsLogged(true);
       router.replace("/home");
     } catch (err) {
       Alert.alert("Error", "Sign up failed. Please try again.");
