@@ -14,7 +14,7 @@ const Toolbars = ({
   // Toggle search visibility and reset search state when cancelled
   const toggleSearch = () => {
     if (isSearchVisible) {
-      onSearch(""); // Reset search when closing
+      onSearch("");
     }
     setSearchVisible(!isSearchVisible);
   };

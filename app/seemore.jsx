@@ -1,50 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { courses } from "../constants/data";
-import NewRealease from "../components/card/NewRelease";
+import NewRelease from "../components/card/NewRelease";
 import Toolbars from "../components/Toolbars";
 import { StatusBar } from "expo-status-bar";
+import useAppwrite from "../lib/useAppwrite";
+import { getAllBooks } from "../lib/appwrite";
 
 const SeeMore = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { title } = route.params;
+  const { data: posts, refetch } = useAppwrite(getAllBooks);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredCourses, setFilteredCourses] = useState(courses);
+  const [filteredCourses, setFilteredCourses] = useState(posts || []);
   const [isSearchVisible, setSearchVisible] = useState(false);
+
+  // Update filteredCourses when posts change
+  useEffect(() => {
+    if (posts && Array.isArray(posts)) {
+      setFilteredCourses(posts);
+    }
+  }, [posts]);
 
   // Handle search input change
   const handleSearch = (query) => {
     setSearchQuery(query);
-
     if (query.trim() === "") {
-      setFilteredCourses(courses);
+      setFilteredCourses(posts);
     } else {
-      const filtered = courses.filter((course) =>
-        course.title.toLowerCase().includes(query.toLowerCase())
+      const filtered = posts.filter((course) =>
+        course.title_book.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredCourses(filtered);
+      setFilteredCourses(filtered); // Update with filtered results
     }
   };
 
   const handleCategoryView = (item) => {
-    navigation.navigate("view_pdf", { item });
+    // Handle category view navigation
+    // navigation.navigate("view_pdf", { item });
   };
 
   return (
     <View className="flex-1 bg-white">
       {/* Reusable Toolbar Component */}
       <Toolbars
-        title={title}
+        title={"List of Collections"}
         isSearchVisible={isSearchVisible}
         setSearchVisible={setSearchVisible}
         searchQuery={searchQuery}
         onSearch={handleSearch}
       />
 
-      {/* Courses List */}
-      <NewRealease data={filteredCourses} onPress={handleCategoryView} />
+      {/* New Release List */}
+      <NewRelease posts={filteredCourses} onPress={handleCategoryView} />
       {/* StatusBar to set light status bar style */}
       <StatusBar backgroundColor="#21A0A5" style="light" />
     </View>

@@ -1,41 +1,37 @@
-import { Text, View } from "react-native";
-import React, { useState } from "react";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { View } from "react-native";
+import React, { useState, useEffect } from "react";
 import Toolbars from "../components/Toolbars";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { coursesBooks } from "../constants/data";
 import Courses from "../components/card/Courses";
 import { useCategory } from "../context/ContextProviders";
 import { StatusBar } from "expo-status-bar";
+import { getAllBooks } from "../lib/appwrite";
+import useAppwrite from "../lib/useAppwrite";
 
 const ViewCourse = () => {
+  const { data: posts, refetch } = useAppwrite(getAllBooks);
+  const { selectedItems } = useCategory();
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredCourses, setFilteredCourses] = useState(coursesBooks);
+  const [filteredCourses, setFilteredCourses] = useState([]);
   const [isSearchVisible, setSearchVisible] = useState(false);
 
+  // Update filteredCourses when posts change
+  useEffect(() => {
+    if (posts && Array.isArray(posts)) {
+      setFilteredCourses(posts);
+    }
+  }, [posts]);
   // Handle search input change
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim() === "") {
-      setFilteredCourses(coursesBooks);
+      setFilteredCourses(posts);
     } else {
-      const filtered = coursesBooks.filter((course) =>
-        course.title.toLowerCase().includes(query.toLowerCase())
+      const filtered = posts.filter((course) =>
+        course.title_book.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredCourses(filtered);
+      setFilteredCourses(filtered); 
     }
   };
-
-  // Toggle search visibility and reset search state when cancelled
-  // const toggleSearch = () => {
-  //   if (isSearchVisible) {
-  //     setSearchQuery("");
-  //     setFilteredCourses(coursesBooks);
-  //   }
-  //   setSearchVisible(!isSearchVisible);
-  // };
-
-  const { selectedItems} = useCategory();
 
   return (
     <View className="flex-1 bg-white">
@@ -47,8 +43,8 @@ const ViewCourse = () => {
         searchQuery={searchQuery}
         onSearch={handleSearch}
       />
-      {/* Scrollable New of Courses */}
-      <Courses data={filteredCourses} />
+      {/* Scrollable List of Courses */}
+      <Courses posts={filteredCourses} />
       {/* StatusBar to set light status bar style */}
       <StatusBar backgroundColor="#21A0A5" style="light" />
     </View>

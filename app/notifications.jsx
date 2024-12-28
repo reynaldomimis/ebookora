@@ -1,57 +1,22 @@
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Linking } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { getAllNotifications } from "../lib/appwrite";
+import useAppwrite from "../lib/useAppwrite";
+import moment from "moment";
 
-// Dummy Notification Data
-// Dummy Notification Data
-const notifications = [
-  {
-    id: "1",
-    title: "A new ticket has been opened by Visitor",
-    subtitle:
-      "You have been assigned a new ticket with detailed instructions on resolving the issue. Please prioritize this task.",
-    time: "22 min",
-    date: "NOV 16, WED 2022",
-  },
-  {
-    id: "2",
-    title: "A new ticket has been opened by Visitor",
-    subtitle: "You have been assigned a new ticket.",
-    time: "22 min",
-    date: "NOV 16, WED 2022",
-  },
-  {
-    id: "3",
-    title: "A new ticket has been opened by oliver-smith-preview-mode",
-    subtitle: "You have been assigned a new ticket.",
-    time: "22 min",
-    date: "NOV 16, WED 2022",
-  },
-  {
-    id: "4",
-    title: "Ticket Assigned",
-    subtitle: "You have been assigned a new ticket.",
-    time: "22 min",
-    date: "NOV 15, TUE 2022",
-  },
-];
-
-// Group Notifications by Date
-const groupByDate = (data) => {
-  return data.reduce((acc, item) => {
-    if (!acc[item.date]) acc[item.date] = [];
-    acc[item.date].push(item);
-    return acc;
-  }, {});
-};
-
-const NotificationItem = ({ title, subtitle, time }) => {
+// Notification Item Component
+const NotificationItem = ({ subject, description, link }) => {
   const [expanded, setExpanded] = useState(false);
-  const maxLength = 100; // Define a maximum length for the subtitle
+  const maxLength = 100;
 
-  // Check if the subtitle exceeds the maximum length
-  const isLongText = subtitle.length > maxLength;
+  // Check if the description exceeds the maximum length
+  const isLongText = description.length > maxLength;
+
+  const openLink = () => {
+    if (link) Linking.openURL(link);
+  };
 
   return (
     <TouchableOpacity
@@ -59,12 +24,14 @@ const NotificationItem = ({ title, subtitle, time }) => {
       onPress={() => isLongText && setExpanded(!expanded)}
     >
       <View className="flex-1 mr-2">
-        <Text className="text-base font-bold text-gray-800 mb-1">{title}</Text>
+        <Text className="text-base font-bold text-gray-800 mb-1">
+          {subject}
+        </Text>
         <Text
           className="text-sm text-gray-500"
-          numberOfLines={expanded || !isLongText ? 0 : 2} // Show limited lines or expand
+          numberOfLines={expanded || !isLongText ? 0 : 2}
         >
-          {subtitle}
+          {description}
         </Text>
         {/* Show 'Read More' / 'Show Less' only if the text is long */}
         {isLongText && (
@@ -75,15 +42,37 @@ const NotificationItem = ({ title, subtitle, time }) => {
             {expanded ? "Show Less" : "Read More"}
           </Text>
         )}
+        {/* Show Link Button */}
+        {link && (
+          <Text
+            className="text-xs text-blue-700 mt-2 underline"
+            onPress={openLink}
+          >
+            Open Link
+          </Text>
+        )}
       </View>
-      <Text className="text-xs text-gray-400">{time}</Text>
+      <Text className="text-xs text-gray-400">
+        {moment().startOf("seconds").fromNow()}
+      </Text>
     </TouchableOpacity>
   );
 };
 
+// Group Notifications by Date
+const groupByDate = (data) => {
+  return data.reduce((acc, item) => {
+    if (!acc[item.date]) acc[item.date] = [];
+    acc[item.date].push(item);
+    return acc;
+  }, {});
+};
+
 const Notifications = () => {
   const navigation = useNavigation();
-  const groupedNotifications = groupByDate(notifications);
+  const { data: notifications, refetch } = useAppwrite(getAllNotifications);
+  // Ensure notifications data exists before grouping
+  const groupedNotifications = notifications ? groupByDate(notifications) : {};
 
   return (
     <View className="flex-1 bg-gray-100">
@@ -99,21 +88,22 @@ const Notifications = () => {
           </Text>
         </View>
       </View>
+      {/* Notification List */}
       <FlatList
         data={Object.keys(groupedNotifications)}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <View>
             {/* Date Section */}
             <Text className="text-sm font-bold text-gray-600 mt-5 mb-2">
-              {item}
+              {moment().format("LLL")}
             </Text>
             {groupedNotifications[item].map((notification) => (
               <NotificationItem
                 key={notification.id}
-                title={notification.title}
-                subtitle={notification.subtitle}
-                time={notification.time}
+                subject={notification.subject}
+                description={notification.description}
+                link={notification.link}
               />
             ))}
           </View>

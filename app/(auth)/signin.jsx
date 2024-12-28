@@ -12,7 +12,7 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
 import { Link, useRouter } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { getAccount, signIn } from "../../lib/appwrite";
 import { useAuth } from "../../context/AuthProvider";
 
 const SignIn = () => {
@@ -31,9 +31,9 @@ const SignIn = () => {
     }
     setSubmitting(true);
     try {
-      const result = await signIn(form.email, form.password);
-      setUser("Rey");
-      console.log("Result ", result);
+      await signIn(form.email, form.password);
+      const result = await getAccount();
+      setUser(result);
       setIsLogged(true);
       router.replace("/home");
     } catch (err) {

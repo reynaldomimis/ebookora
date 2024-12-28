@@ -5,8 +5,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCategory } from "../../context/ContextProviders";
 import EmptyState from "../EmptyState";
 import { useNavigation } from "expo-router";
+import { getAllBooks } from "../../lib/appwrite";
+import useAppwrite from "../../lib/useAppwrite";
 
-const NewRelease = ({ data }) => {
+const NewRelease = ({ posts }) => {
   const { favorites, addFavorite, removeFavorite, setSelectedItems } =
     useCategory();
   const navigation = useNavigation();
@@ -14,14 +16,16 @@ const NewRelease = ({ data }) => {
   // Course Item Component
   const RenderNewReleaseItem = ({ item }) => {
     // Check if item is already in favorites
-    const isFavorite = favorites.some((fav) => fav.id === item.id);
+    const isFavorite = favorites.some((fav) => fav.$id === item.$id);
 
     const handleBookmark = () => {
       if (isFavorite) {
         // Remove from favorites if already added
-        removeFavorite(item.id);
+        removeFavorite(item.$id);
+        console.log("if book ", item.$id);
       } else {
         // Add to favorites
+        console.log("elses book ", item.$id);
         addFavorite(item);
       }
     };
@@ -29,8 +33,8 @@ const NewRelease = ({ data }) => {
     const handleItem = () => {
       navigation.navigate("view_pdf");
       setSelectedItems({
-        id: item.id,
-        title: item.title,
+        id: item.$id,
+        title: item.title_book,
       });
     };
 
@@ -52,15 +56,19 @@ const NewRelease = ({ data }) => {
       >
         {/* Course Image */}
         <Image
-          source={{ uri: item.image }}
+          source={{ uri: item.thumbnail }}
           resizeMode="stretch"
           style={{ width: 80, height: 80, borderRadius: 8, marginRight: 16 }}
         />
 
         {/* Course Info */}
         <View style={{ flex: 1, gap: 8 }}>
-          <Text style={{ fontSize: 16, fontWeight: "600" }}>{item.title}</Text>
-          <Text style={{ fontSize: 14, color: "#6B6B6B" }}>by {item.by}</Text>
+          <Text style={{ fontSize: 16, fontWeight: "600" }}>
+            {item.title_book}
+          </Text>
+          <Text style={{ fontSize: 14, color: "#6B6B6B" }}>
+            by {item.author}
+          </Text>
           <Text
             style={{
               fontSize: 16,
@@ -86,10 +94,10 @@ const NewRelease = ({ data }) => {
 
   return (
     <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
+      data={posts}
+      keyExtractor={(item) => item.$id}
       renderItem={({ item }) => <RenderNewReleaseItem item={item} />}
-      ListEmptyComponent={EmptyState}
+      // ListEmptyComponent={EmptyState}
       contentContainerStyle={{
         paddingHorizontal: 16,
         paddingBottom: 20,

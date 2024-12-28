@@ -13,7 +13,7 @@ export const CategoryProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItems, setSelectedItems] = useState({});
   const [favorites, setFavorites] = useState([]);
-  const [points, setPoints] = useState(0); // Add points state
+  const [points, setPoints] = useState(0);
 
   const addFavorite = (item) => {
     setFavorites((prevFavorites) => [...prevFavorites, item]);
@@ -21,7 +21,7 @@ export const CategoryProvider = ({ children }) => {
 
   const removeFavorite = (itemId) => {
     setFavorites((prevFavorites) =>
-      prevFavorites.filter((item) => item.id !== itemId)
+      prevFavorites.filter((item) => item.$id !== itemId)
     );
   };
 

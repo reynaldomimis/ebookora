@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Image, Pressable, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCategory } from "../../context/ContextProviders";
 import Toolbars from "../../components/Toolbars";
@@ -7,8 +14,8 @@ import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 const Favorite = () => {
-  const { favorites, removeFavorite, setSelectedItems } = useCategory();
   const navigation = useNavigation();
+  const { favorites, removeFavorite, setSelectedItems } = useCategory();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchVisible, setSearchVisible] = useState(false);
 
@@ -19,18 +26,18 @@ const Favorite = () => {
 
   // Filter favorites based on search query
   const filteredFavorites = favorites.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+    item.title_book.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const RenderFavoriteItem = ({ item }) => {
     const handleItem = () => {
       navigation.navigate("view_pdf");
       setSelectedItems({
-        id: item.id,
-        title: item.title,
+        id: item.$id,
+        title: item.title_book,
       });
     };
-    
+
     return (
       <View className="flex-1 p-2">
         <Pressable
@@ -44,12 +51,12 @@ const Favorite = () => {
           }}
         >
           <Image
-            source={{ uri: item.image }}
+            source={{ uri: item.thumbnail }}
             resizeMode="stretch"
             className="w-full h-52 rounded-t-lg"
           />
           <View className="flex-col p-4">
-            <Text className="text-lg font-semibold">{item.title}</Text>
+            <Text className="text-lg font-semibold">{item.title_book}</Text>
             <Text className="text-base font-plight">{item.description}</Text>
           </View>
 
@@ -76,7 +83,7 @@ const Favorite = () => {
 
               <TouchableOpacity
                 className="flex-row items-center"
-                onPress={() => removeFavorite(item.id)}
+                onPress={() => removeFavorite(item.$id)}
               >
                 <Icon name="delete-outline" size={25} color="gray" />
                 <Text className="ml-1 text-xs text-gray-500">Delete</Text>
@@ -100,7 +107,7 @@ const Favorite = () => {
       />
       <FlatList
         data={filteredFavorites}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <RenderFavoriteItem item={item} />}
         contentContainerStyle={{
           paddingHorizontal: 8,

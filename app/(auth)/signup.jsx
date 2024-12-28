@@ -13,6 +13,7 @@ import FormField from "../../components/FormField";
 import CButton from "../../components/CButton";
 import { Link, useRouter } from "expo-router";
 import { createUser } from "../../lib/appwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 const Signup = () => {
   const { setUser, setIsLogged } = useAuth();
@@ -32,12 +33,12 @@ const Signup = () => {
     setSubmitting(true);
     try {
       const result = await createUser(form.email, form.password, form.username);
-      setUser("Rey");
+      setUser(result);
       console.log("Result ", result);
       setIsLogged(true);
       router.replace("/home");
     } catch (err) {
-      Alert.alert("Error", "Sign up failed. Please try again.");
+      Alert.alert("Error", "Sign up failed. Please try again.", err);
     } finally {
       setSubmitting(false);
     }

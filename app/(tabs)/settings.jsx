@@ -11,7 +11,9 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BugReportModal from "../../components/BugReportModal";
 import Constants from "expo-constants";
-import { useRouter} from "expo-router";
+import { useRouter } from "expo-router";
+import { signOut } from "../../lib/appwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 // Sample settings list with titles and descriptions
 const settingsList = [
@@ -92,6 +94,7 @@ const Settings = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [bugTitle, setBugTitle] = useState("");
   const [bugDescription, setBugDescription] = useState("");
+  const { setUser, setIsLogged } = useAuth();
   const router = useRouter();
 
   const handlePress = async (id) => {
@@ -106,14 +109,14 @@ const Settings = () => {
 
   const handleSignOut = async () => {
     try {
-      // await signOut();
-      // After successful sign-out, navigate to login screen
-      router.replace("/signin"); // Adjust the name of the login screen if necessary
+      await signOut();
+      setUser(null);
+      setIsLogged(false);
+      router.replace("/signin");
     } catch (error) {
       console.error("Sign out failed:", error);
     }
   };
-
   const handleSubmitBug = () => {
     console.log("Bug Submitted:", { bugTitle, bugDescription });
     setBugTitle("");

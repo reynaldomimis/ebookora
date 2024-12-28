@@ -1,28 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { categories, courses } from "../../constants/data";
 import Explore from "../../components/card/Explore";
 import NewRelease from "../../components/card/NewRelease";
 import { useCategory } from "../../context/ContextProviders";
 import SearchInput from "../../components/SearchInput";
+import {
+  getAllBooks,
+  getUnreadNotificationsCount,
+  updateIsReadNotificationByUserId,
+} from "../../lib/appwrite";
+import useAppwrite from "../../lib/useAppwrite";
+import { useAuth } from "../../context/AuthProvider";
 
 const Home = () => {
-  const { setSelectedCategory, points, user } = useCategory();
-  const [notificationCount, setNotificationCount] = useState(3);
-  const navigation = useNavigation();
+  const router = useRouter();
+  // const { data: posts, refetch } = useAppwrite(getAllBooks);
+  const { setSelectedCategory, points } = useCategory();
+  const { user } = useAuth();
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [posts, setPost] = useState([]);
 
-  const handleNotificationPress = () => {
-    navigation.navigate("notifications");
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const count = await getUnreadNotificationsCount();
+        setNotificationCount(count);
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+    fetchUnreadCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const count = await getAllBooks();
+        setPost(count);
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+    fetchPost();
+  }, []);
+
+  const handleNotificationPress = async () => {
+    await updateIsReadNotificationByUserId(user?.$id, true);
     setNotificationCount(0);
+    router.push("/notifications");
   };
 
-  console.log("Test", JSON.stringify(user, null, 2));
-
   const handleCategoryView = (item) => {
-    navigation.navigate("view_pdf");
+    router.push("/view_pdf");
     setSelectedCategory(item.title);
   };
 
@@ -35,7 +67,7 @@ const Home = () => {
               Welcome to eBookora 👋
             </Text>
             <Text className="text-2xl text-white font-psemibold">
-              {user?.labels}
+              {user?.username || user?.name}
             </Text>
           </View>
           <View className="flex-col items-center justify-between ">
@@ -78,14 +110,10 @@ const Home = () => {
       <Text className="text-xl font-psemibold my-2 px-4 py-4">
         Explore Courses
       </Text>
-      <Explore data={categories} />
+      <Explore />
       <View className="flex-row justify-between py-4 items-center px-4 mt-2">
         <Text className="text-xl font-psemibold">New Collection</Text>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("seemore", { title: "List of Collections" })
-          }
-        >
+        <TouchableOpacity onPress={() => router.push("/seemore")}>
           <Text className="text-base font-pmedium text-blue">See More</Text>
         </TouchableOpacity>
       </View>
@@ -95,7 +123,7 @@ const Home = () => {
   return (
     <View className="flex-1">
       <Header />
-      <NewRelease data={courses} onPress={handleCategoryView} />
+      <NewRelease posts={posts} onPress={handleCategoryView} />
       <StatusBar backgroundColor="#21A0A5" style="light" />
     </View>
   );

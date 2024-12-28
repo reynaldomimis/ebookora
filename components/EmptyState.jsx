@@ -1,8 +1,14 @@
-import { Image, View, Text, TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { images } from "../constants/index";
 import { useNavigation } from "expo-router";
 
-const EmptyState = () => {
+const EmptyState = ({ loading }) => {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
@@ -11,16 +17,22 @@ const EmptyState = () => {
 
   return (
     <View className="flex-1 justify-center items-center bg-white p-12">
-      <Image
-        source={images.laughing}
-        style={{ width: 150, height: 150, marginBottom: 16 }}
-      />
-      <Text className="text-2xl font-psemibold text-[#6B6B6B] mt-8">
-        No Records Found
-      </Text>
-      <Text className="text-base text-center text-[#9A9A9A] mt-2">
-        Try adjusting your search criteria or check back later.
-      </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          <Image
+            source={images.laughing}
+            style={{ width: 150, height: 150, marginBottom: 16 }}
+          />
+          <Text className="text-2xl font-psemibold text-[#6B6B6B] mt-8">
+            No Records Found
+          </Text>
+          <Text className="text-base text-center text-[#9A9A9A] mt-2">
+            Try adjusting your search criteria or check back later.
+          </Text>
+        </>
+      )}
 
       {/* Go Back Button */}
       <TouchableOpacity
