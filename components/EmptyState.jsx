@@ -28,19 +28,19 @@ const EmptyState = ({ loading }) => {
           <Text className="text-2xl font-psemibold text-[#6B6B6B] mt-8">
             No Records Found
           </Text>
-          <Text className="text-base text-center text-[#9A9A9A] mt-2">
+          {/* <Text className="text-base text-center text-[#9A9A9A] mt-2">
             Try adjusting your search criteria or check back later.
-          </Text>
+          </Text> */}
         </>
       )}
 
-      {/* Go Back Button */}
+      {/* Go Back Button
       <TouchableOpacity
         onPress={handleGoBack}
         className="mt-10 bg-blue px-6 py-3 rounded-lg"
       >
         <Text className="text-white text-base font-pmedium">Go Back</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

@@ -3,9 +3,9 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import SearchInput from "../../components/SearchInput";
 import EmptyState from "../../components/EmptyState";
-import { courses } from "../../constants/data";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCategory } from "../../context/ContextProviders";
+import { getAllBooks } from "../../lib/appwrite";
 
 const Search = () => {
   const { query } = useLocalSearchParams();
@@ -15,9 +15,10 @@ const Search = () => {
   const navigation = useNavigation();
 
   // Mock refetch function to use sample data
-  const refetch = () => {
+  const refetch = async () => {
+    const courses = await getAllBooks();
     const filteredPosts = courses.filter((item) =>
-      item.title.toLowerCase().includes(query.toLowerCase())
+      item.title_book.toLowerCase().includes(query.toLowerCase())
     );
     setPosts(filteredPosts);
   };
@@ -28,12 +29,12 @@ const Search = () => {
 
   const RenderExploreItem = ({ item }) => {
     // Check if item is already in favorites
-    const isFavorite = favorites.some((fav) => fav.id === item.id);
+    const isFavorite = favorites.some((fav) => fav.$id === item.$id);
 
     const handleBookmark = () => {
       if (isFavorite) {
         // Remove from favorites if already added
-        removeFavorite(item.id);
+        removeFavorite(item.$id);
       } else {
         // Add to favorites
         addFavorite(item);
@@ -43,8 +44,8 @@ const Search = () => {
     const handleItem = () => {
       navigation.navigate("view_pdf");
       setSelectedItems({
-        id: item.id,
-        title: item.title,
+        id: item.$id,
+        title: item.title_book,
       });
     };
 
@@ -52,12 +53,12 @@ const Search = () => {
       <View className="flex-1 w-1/2">
         <View className="bg-white shadow-sm rounded-lg m-2">
           <Image
-            source={{ uri: item.image }}
+            source={{ uri: item.thumbnail }}
             resizeMode="stretch"
             className="w-full h-60 rounded-t-lg"
           />
           <View className="p-4">
-            <Text className="text-base font-semibold">{item.title}</Text>
+            <Text className="text-base font-semibold">{item.title_book}</Text>
           </View>
 
           {/* Actions - Reading and Add to Favorites */}
@@ -91,13 +92,13 @@ const Search = () => {
     <View className="flex-1 bg-white">
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.$id}
         renderItem={RenderExploreItem}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={{
           justifyContent: "space-between",
-          padding: 8
+          padding: 8,
         }}
         ListHeaderComponent={() => (
           <View className="bg-blue pt-14 px-6 pb-4">
@@ -112,7 +113,7 @@ const Search = () => {
             </View>
           </View>
         )}
-        ListEmptyComponent={() => <EmptyState />}
+        ListEmptyComponent={EmptyState}
       />
     </View>
   );

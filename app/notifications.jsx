@@ -100,7 +100,7 @@ const Notifications = () => {
             </Text>
             {groupedNotifications[item].map((notification) => (
               <NotificationItem
-                key={notification.id}
+                key={notification.$id}
                 subject={notification.subject}
                 description={notification.description}
                 link={notification.link}

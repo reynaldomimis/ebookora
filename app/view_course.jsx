@@ -5,14 +5,26 @@ import Courses from "../components/card/Courses";
 import { useCategory } from "../context/ContextProviders";
 import { StatusBar } from "expo-status-bar";
 import { getAllBooks } from "../lib/appwrite";
-import useAppwrite from "../lib/useAppwrite";
 
 const ViewCourse = () => {
-  const { data: posts, refetch } = useAppwrite(getAllBooks);
+  // const { data: posts, refetch } = useAppwrite(getAllBooks);
   const { selectedItems } = useCategory();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [isSearchVisible, setSearchVisible] = useState(false);
+  const [posts, setPost] = useState([]);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const books = await getAllBooks();
+        setPost(books);
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+    fetchPost();
+  }, []);
 
   // Update filteredCourses when posts change
   useEffect(() => {
@@ -20,6 +32,7 @@ const ViewCourse = () => {
       setFilteredCourses(posts);
     }
   }, [posts]);
+
   // Handle search input change
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -29,7 +42,7 @@ const ViewCourse = () => {
       const filtered = posts.filter((course) =>
         course.title_book.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredCourses(filtered); 
+      setFilteredCourses(filtered);
     }
   };
 

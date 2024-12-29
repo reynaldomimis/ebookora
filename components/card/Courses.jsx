@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import EmptyState from "../EmptyState";
 import { useCategory } from "../../context/ContextProviders";
 import { useNavigation } from "expo-router";
+import EmptyState from "../EmptyState";
 
 export default Courses = ({ posts }) => {
   const {
@@ -22,19 +15,28 @@ export default Courses = ({ posts }) => {
   } = useCategory();
   const navigation = useNavigation();
 
-  const [loading, setLoading] = useState(true); // Manage loading state
-
   // Filter the data by `item.course`
   const filteredData = posts.filter(
     (item) => item.course === selectedItems.course
   );
 
-  useEffect(() => {
-    // Simulate fetching or delay to update loading state
-    if (posts) {
-      setLoading(false); // Data is fetched, set loading to false
+  const renderFooter = () => {
+    if (filteredData.length === 0) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <Text>No courses available</Text>
+        </View>
+      );
     }
-  }, [posts]);
+    return null;
+  };
 
   const RenderExploreItem = ({ item }) => {
     const isFavorite = favorites.some((fav) => fav.$id === item.$id);
@@ -103,17 +105,9 @@ export default Courses = ({ posts }) => {
     );
   };
 
-  // Render loading component
-  const renderLoading = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#21A0A5" />
-    </View>
-  );
-
-  // If still loading, show loading spinner, otherwise show FlatList
   return (
     <FlatList
-      data={loading ? [] : filteredData} // Show empty array while loading
+      data={filteredData}
       keyExtractor={(item) => item.$id}
       renderItem={({ item }) => <RenderExploreItem item={item} />}
       numColumns={2}
@@ -122,7 +116,7 @@ export default Courses = ({ posts }) => {
         justifyContent: "space-between",
       }}
       contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 20 }}
-      // ListEmptyComponent={loading ? renderLoading() : EmptyState} // Show loading or empty state
+      ListEmptyComponent={EmptyState}
     />
   );
 };
