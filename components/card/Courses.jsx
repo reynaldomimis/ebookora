@@ -20,30 +20,12 @@ export default Courses = ({ posts }) => {
     (item) => item.course === selectedItems.course
   );
 
-  const renderFooter = () => {
-    if (filteredData.length === 0) {
-      return (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 20,
-          }}
-        >
-          <Text>No courses available</Text>
-        </View>
-      );
-    }
-    return null;
-  };
-
   const RenderExploreItem = ({ item }) => {
     const isFavorite = favorites.some((fav) => fav.$id === item.$id);
 
     const handleBookmark = () => {
       if (isFavorite) {
-        removeFavorite(item.id);
+        removeFavorite(item.$id);
       } else {
         addFavorite(item);
       }

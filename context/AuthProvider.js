@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const currentUser = await getAccount();
       if (currentUser) {
-        console.log("Session", currentUser);
         setUser(currentUser);
         setIsLogged(true);
         router.replace("/home");

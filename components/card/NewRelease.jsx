@@ -5,8 +5,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCategory } from "../../context/ContextProviders";
 import EmptyState from "../EmptyState";
 import { useNavigation } from "expo-router";
-import { getAllBooks } from "../../lib/appwrite";
-import useAppwrite from "../../lib/useAppwrite";
 
 const NewRelease = ({ posts }) => {
   const { favorites, addFavorite, removeFavorite, setSelectedItems } =
@@ -20,12 +18,8 @@ const NewRelease = ({ posts }) => {
 
     const handleBookmark = () => {
       if (isFavorite) {
-        // Remove from favorites if already added
         removeFavorite(item.$id);
-        console.log("if book ", item.$id);
       } else {
-        // Add to favorites
-        console.log("elses book ", item.$id);
         addFavorite(item);
       }
     };

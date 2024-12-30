@@ -12,16 +12,27 @@ import {
   getUnreadNotificationsCount,
   updateIsReadNotificationByUserId,
 } from "../../lib/appwrite";
-import useAppwrite from "../../lib/useAppwrite";
 import { useAuth } from "../../context/AuthProvider";
 
 const Home = () => {
   const router = useRouter();
   // const { data: posts, refetch } = useAppwrite(getAllBooks);
-  const { setSelectedCategory, points } = useCategory();
+  const { setSelectedCategory, points, favorites } = useCategory();
   const { user } = useAuth();
   const [notificationCount, setNotificationCount] = useState(0);
   const [posts, setPost] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Fetch new posts data
+      const updatedPosts = await fetchPosts(); // Replace with actual API call
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.error("Error refreshing posts:", error);
+    }
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     const fetchUnreadCount = async () => {
@@ -45,7 +56,7 @@ const Home = () => {
       }
     };
     fetchPost();
-  }, []);
+  }, [favorites]);
 
   const handleNotificationPress = async () => {
     await updateIsReadNotificationByUserId(user?.$id, true);
