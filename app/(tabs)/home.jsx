@@ -21,18 +21,6 @@ const Home = () => {
   const { user } = useAuth();
   const [notificationCount, setNotificationCount] = useState(0);
   const [posts, setPost] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      // Fetch new posts data
-      const updatedPosts = await fetchPosts(); // Replace with actual API call
-      setPosts(updatedPosts);
-    } catch (error) {
-      console.error("Error refreshing posts:", error);
-    }
-    setRefreshing(false);
-  };
 
   useEffect(() => {
     const fetchUnreadCount = async () => {

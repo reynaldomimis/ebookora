@@ -4,10 +4,13 @@ import { View, Text, FlatList, TouchableOpacity, Linking } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { getAllNotifications } from "../lib/appwrite";
 import useAppwrite from "../lib/useAppwrite";
-import moment from "moment";
+import {
+  formatToLongDateTime,
+  formatToRelativeTime,
+} from "./search/util/utilHelper";
 
 // Notification Item Component
-const NotificationItem = ({ subject, description, link }) => {
+const NotificationItem = ({ subject, description, link, date }) => {
   const [expanded, setExpanded] = useState(false);
   const maxLength = 100;
 
@@ -53,7 +56,7 @@ const NotificationItem = ({ subject, description, link }) => {
         )}
       </View>
       <Text className="text-xs text-gray-400">
-        {moment().startOf("seconds").fromNow()}
+        {formatToRelativeTime(date)}
       </Text>
     </TouchableOpacity>
   );
@@ -96,7 +99,7 @@ const Notifications = () => {
           <View>
             {/* Date Section */}
             <Text className="text-sm font-bold text-gray-600 mt-5 mb-2">
-              {moment().format("LLL")}
+              {formatToLongDateTime(item)}
             </Text>
             {groupedNotifications[item].map((notification) => (
               <NotificationItem
@@ -104,6 +107,7 @@ const Notifications = () => {
                 subject={notification.subject}
                 description={notification.description}
                 link={notification.link}
+                date={notification.date}
               />
             ))}
           </View>

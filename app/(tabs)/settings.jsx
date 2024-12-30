@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,16 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BugReportModal from "../../components/BugReportModal";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
-import { signOut } from "../../lib/appwrite";
+import {
+  addReport,
+  getAbout,
+  getAllLogs,
+  getCollaborators,
+  signOut,
+} from "../../lib/appwrite";
 import { useAuth } from "../../context/AuthProvider";
+import { formatToLongDate } from "../search/util/utilHelper";
+import { images } from "../../constants";
 
 // Sample settings list with titles and descriptions
 const settingsList = [
@@ -22,43 +30,9 @@ const settingsList = [
   {
     id: "3",
     title: "About App",
-    description: "Explore about the Ebookora: Free Ebooks Online",
   },
   { id: "4", title: "Special Credits", description: "List of contributors" },
   { id: "5", title: "Log Out" },
-];
-
-// Sample changelog data
-const changelogData = [
-  {
-    version: "v2.1.0",
-    date: "2024-11-20",
-    updates: [
-      "Improved UI for bug report submission.",
-      "Fixed issue with text formatting in the bug description field.",
-      "Optimized loading times for viewing reports.",
-      "Bug fixes and performance improvements.",
-    ],
-  },
-  {
-    version: "v2.0.0",
-    date: "2024-10-15",
-    updates: [
-      "Introduced a new bug report feature.",
-      "Added special credits section to honor contributors.",
-      "Enhanced security measures for handling reports.",
-      "Fixed minor UI bugs and updated app design.",
-    ],
-  },
-];
-
-// Sample special credits data
-const specialCreditsData = [
-  { name: "John Doe", contribution: "App development and bug fixing" },
-  { name: "Jane Smith", contribution: "UI/UX Design" },
-  { name: "Carlos Perez", contribution: "Quality Assurance and Testing" },
-  { name: "Alice Green", contribution: "Backend API development" },
-  { name: "Bob White", contribution: "Security enhancements and updates" },
 ];
 
 const SettingsItem = ({
@@ -90,13 +64,57 @@ const SettingsItem = ({
 );
 
 const Settings = () => {
+  const router = useRouter();
   const [expandedItem, setExpandedItem] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [bugTitle, setBugTitle] = useState("");
   const [bugDescription, setBugDescription] = useState("");
-  const { setUser, setIsLogged } = useAuth();
-  const router = useRouter();
+  const { user, setUser, setIsLogged } = useAuth();
+  const [changelogData, setChangelogData] = useState([]);
+  const [collaborator, setCollaborator] = useState([]);
+  const [about, setAbout] = useState({});
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const logs = await getAllLogs();
+        if (!logs || logs.length === 0) {
+          setChangelogData([]);
+          return;
+        }
+        let processedCategories = [];
+        logs.forEach((item) => {
+          if (item.description) {
+            processedCategories.push({
+              date: item.$createdAt,
+              version: item.version,
+              title: item.title,
+              description: item.description,
+            });
+          }
+        });
+        setChangelogData(processedCategories);
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const ab = await getAbout();
+        const collab = await getCollaborators();
+        setAbout(ab);
+        setCollaborator(collab);
+      } catch (error) {
+        console.error("Failed to fetch about or collaborators:", error);
+      }
+    };
+
+    fetchPost();
+  }, []);
   const handlePress = async (id) => {
     if (id === "1") {
       setModalVisible(true);
@@ -117,13 +135,24 @@ const Settings = () => {
       console.error("Sign out failed:", error);
     }
   };
-  const handleSubmitBug = () => {
-    console.log("Bug Submitted:", { bugTitle, bugDescription });
-    setBugTitle("");
-    setBugDescription("");
-    setModalVisible(false);
+  // Function to handle form submission and add bug report
+  const handleSubmitBug = async () => {
+    try {
+      // Prepare the bug report data
+      const bugReport = {
+        title: bugTitle,
+        description: bugDescription,
+        userId: user?.$id,
+        status: "pending",
+      };
+      const add = await addReport(bugReport);
+      setBugTitle("");
+      setBugDescription("");
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Failed to submit the bug report:", error);
+    }
   };
-
   return (
     <View className="flex-1 bg-white">
       {/* Toolbar */}
@@ -141,8 +170,9 @@ const Settings = () => {
       {/* Image and Version */}
       <View className="items-center my-8">
         <Image
-          source={{ uri: "https://via.placeholder.com/100" }}
+          source={images.logo}
           style={{ width: 100, height: 100, borderRadius: 50 }}
+          resizeMode="stretch"
         />
         <Text className="text-md text-gray-600 mt-2">
           Version {Constants.systemVersion}
@@ -167,32 +197,55 @@ const Settings = () => {
             {/* Changelog */}
             {item.id === "2" && expandedItem === "2" && (
               <View className="mt-4">
-                {changelogData.map((change) => (
-                  <View key={change.version} className="mb-3">
-                    <Text className="text-lg font-semibold text-[#333]">
-                      {change.version} - {change.date}
-                    </Text>
-                    {change.updates.map((update, index) => (
-                      <Text key={index} className="text-sm text-[#555] mt-1">
-                        - {update}
+                {Array.isArray(changelogData) && changelogData.length > 0 ? (
+                  changelogData.map((change, index) => (
+                    <View key={index} className="mb-3">
+                      <Text className="text-lg font-semibold text-[#333]">
+                        {change.version} - {formatToLongDate(change.date)}
                       </Text>
-                    ))}
-                  </View>
-                ))}
+                      {/* Check if description is an array */}
+                      {Array.isArray(change.description) &&
+                      change.description.length > 0 ? (
+                        change.description.map((update, updateIndex) => (
+                          <Text
+                            key={updateIndex}
+                            className="text-sm text-[#555] mt-1"
+                          >
+                            - {update.trim()}
+                          </Text>
+                        ))
+                      ) : (
+                        <Text className="text-sm text-[#555] mt-1">
+                          No description available
+                        </Text>
+                      )}
+                    </View>
+                  ))
+                ) : (
+                  <Text className="text-sm text-[#555]">
+                    No changelog available.
+                  </Text>
+                )}
               </View>
             )}
 
             {/* Special Credits */}
             {item.id === "4" && expandedItem === "4" && (
               <View className="mt-4 ">
-                {specialCreditsData.map((credit, index) => (
-                  <View key={index} style={styles.creditContainer}>
-                    <Text style={styles.name}>{credit.name}</Text>
-                    <Text style={styles.contribution}>
-                      {credit.contribution}
-                    </Text>
-                  </View>
-                ))}
+                {collaborator.length > 0 ? (
+                  collaborator.map((credit, index) => (
+                    <View key={index} style={styles.creditContainer}>
+                      <Text style={styles.name}>{credit.name}</Text>
+                      <Text style={styles.contribution}>
+                        {credit.contribution}
+                      </Text>
+                    </View>
+                  ))
+                ) : (
+                  <Text className="text-sm text-[#555]">
+                    No special credits available.
+                  </Text>
+                )}
               </View>
             )}
 
@@ -200,9 +253,7 @@ const Settings = () => {
             {item.id === "3" && expandedItem === "3" && (
               <View className="mt-4">
                 <Text className="text-sm text-[#555]">
-                  eBookora: Free Ebooks Course is an app designed to manage and
-                  report bugs efficiently. It allows users to submit bug reports
-                  and track app updates and changes.
+                  {about[0].description}
                 </Text>
               </View>
             )}
@@ -228,12 +279,12 @@ const styles = StyleSheet.create({
   creditContainer: {
     marginBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#D1D5DB",
+    borderBottomColor: "#ddd",
     paddingBottom: 8,
   },
   name: {
-    fontSize: 16,
     fontWeight: "bold",
+    fontSize: 16,
   },
   contribution: {
     fontSize: 14,
